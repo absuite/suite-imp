@@ -26,9 +26,9 @@ Begin
 		,h.CreatedBy as ''person''
 
 		-- src info
-		,h.id as ''src_doc_id''
+		,CONVERT(NVARCHAR(50),h.id) as ''src_doc_id''
 		,''UFIDA.U9.MO.Complete.CompleteRpt'' as ''src_doc_type''
-		,l.id as ''src_key_id''
+		,CONVERT(NVARCHAR(50),l.id) as ''src_key_id''
 		,''UFIDA.U9.MO.Complete.CompleteRptRcvLine'' as ''src_key_type''
 
 		--docInfo

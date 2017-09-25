@@ -26,19 +26,15 @@ Begin
 		,h.CreatedBy as ''person''
 
 		-- src info
-		,h.id as ''src_doc_id''
+		,CONVERT(NVARCHAR(50),h.id) as ''src_doc_id''
 		,''UFIDA.U9.PM.Rcv.Receivement'' as ''src_doc_type''
-		,l.id as ''src_key_id''
+		,CONVERT(NVARCHAR(50),l.id) as ''src_key_id''
 		,''UFIDA.U9.PM.Rcv.RcvLine'' as ''src_key_type''
 
 		--docInfo
 		,h.DocNo as ''doc_no'',isnull(l.ConfirmDate,h.BusinessDate) as ''doc_date''
 
 		--fm
-		,Forg.Code as ''fm_org''
-		,Fdept.Code as ''fm_dept''
-		,Fwh.Code as ''fm_wh''
-		,FPerson.Code as ''fm_person''
 
 		--to
 		,Torg.Code as ''to_org''
@@ -67,13 +63,10 @@ Begin
 		left join PM_RcvDocType_Trl as dt on d.ID=dt.ID and dt.SysMLFlag=@SysMLFlag
 		inner join CBO_ItemMaster as item on l.ItemInfo_ItemID=item.ID
 		--From
-		left Join Base_Organization as Forg on h.Org=Forg.ID
-		left join CBO_Department as Fdept on l.RcvDept=Fdept.ID
-		left join CBO_Wh as Fwh on l.Wh=Fwh.ID
-		left join CBO_Operators as FPerson on l.WhMan=FPerson.ID
+
 		--Tag
-		left join Base_Organization as Torg on h.PurOrg=Torg.ID
-		left join CBO_Department as Tdept on l.PurDept=Tdept.ID
+		left join Base_Organization as Torg on l.OwnOrg=Torg.ID
+		left join CBO_Department as Tdept on l.RcvDept=Tdept.ID
 		left join CBO_Operators as TPerson on l.PurOper=TPerson.ID
 		left join CBO_Wh as Twh on l.Wh=Twh.ID
 
