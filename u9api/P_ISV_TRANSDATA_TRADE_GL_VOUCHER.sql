@@ -36,7 +36,7 @@ Begin
 
 		--fm
 		,Forg.Code as ''fm_org''
-		,Segment5 as ''fm_dept''
+		,Segment8 as ''fm_dept''
 
 		,ac.Segment2  as ''trader''
 		,ac.Segment1 as  ''account''
