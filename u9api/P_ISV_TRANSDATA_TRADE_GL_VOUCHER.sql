@@ -32,7 +32,7 @@ Begin
 		,''UFIDA.U9.GL.Voucher.Entry'' as ''src_key_type''
 
 		--docInfo
-		,h.DocNo as ''doc_no'',h.PostDate as ''doc_date''
+		,h.DocNo as ''doc_no'',ap.ToDate as ''doc_date''
 
 		--fm
 		,Forg.Code as ''fm_org''
@@ -50,6 +50,8 @@ Begin
 	Set @SQL=@SQL+'
 	From GL_Voucher as h
 		Inner Join GL_Entry as l on h.ID=l.Voucher
+		inner join Base_SOBAccountingPeriod as sp on h.PostedPeriod=sp.ID
+		Inner join Base_AccountingPeriod as ap on sp.AccountPeriod=ap.ID
 		Inner Join Base_Organization as org on h.Org=org.ID
 		
 		left join CBO_Account as ac on l.Account = ac.id
@@ -63,11 +65,11 @@ Begin
 
 	If ISNULL(@FromDate,'')>'1900-01-01'
 	Begin
-		Set @SQL=@SQL+' and h.PostDate >=@FromDate '
+		Set @SQL=@SQL+' and  ap.FromDate>=@FromDate'
 	End
 	If ISNULL(@ToDate,'')>'1900-01-01'
 	Begin
-		Set @SQL=@SQL+' and h.PostDate <=@ToDate '
+		Set @SQL=@SQL+' and ap.ToDate <=@ToDate '
 	End
 
 	Exec sp_executesql @SQL,N'@SysMLFlag Nvarchar(50),@FromDate DateTime,@ToDate DateTime',@SysMLFlag,@FromDate,@ToDate;

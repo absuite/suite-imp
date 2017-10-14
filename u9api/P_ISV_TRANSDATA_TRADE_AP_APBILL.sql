@@ -64,11 +64,11 @@ Begin
 
 	If ISNULL(@FromDate,'')>'1900-01-01'
 	Begin
-		Set @SQL=@SQL+' and h.AccrueDate >=@FromDate '
+		Set @SQL=@SQL+' and convert(nvarchar(10),h.AccrueDate,120) >=@FromDate '
 	End
 	If ISNULL(@ToDate,'')>'1900-01-01'
 	Begin
-		Set @SQL=@SQL+' and h.AccrueDate <=@ToDate '
+		Set @SQL=@SQL+' and convert(nvarchar(10),h.AccrueDate,120) <=@ToDate '
 	End
 
 	Exec sp_executesql @SQL,N'@SysMLFlag Nvarchar(50),@FromDate DateTime,@ToDate DateTime',@SysMLFlag,@FromDate,@ToDate;
