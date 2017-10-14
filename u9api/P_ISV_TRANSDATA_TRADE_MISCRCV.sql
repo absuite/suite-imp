@@ -32,7 +32,7 @@ Begin
 		,''UFIDA.U9.InvDoc.MiscRcv.MiscRcvTransL'' as ''src_key_type''
 
 		--docInfo
-		,h.DocNo as ''doc_no'',h.BusinessDate as ''doc_date''
+		,h.DocNo as ''doc_no'',convert(nvarchar(10),h.BusinessDate,120) as ''doc_date''
 
 		--fm
 		,Forg.Code as ''fm_org''

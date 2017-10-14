@@ -32,7 +32,8 @@ Begin
 		,''UFIDA.U9.MO.Issue.IssueDocLine'' as ''src_key_type''
 
 		--docInfo
-		,h.DocNo as ''doc_no'',isnull(l.ActualIssueDate,h.BusinessDate) as ''doc_date''
+		,h.DocNo as ''doc_no''
+		,convert(nvarchar(10),isnull(l.ActualIssueDate,h.BusinessDate),120) as ''doc_date''
 
 		--fm
 		,Forg.Code as ''fm_org''
@@ -52,9 +53,9 @@ Begin
 		,cu.Code as ''uom''
 
 		--qty
-		,l.IssuedQtyByCoUOM   as ''qty''
+		,(case when h.IssueType=1 then -1 else 1 end) * l.IssuedQtyByCoUOM   as ''qty''
 		,l.Price as ''price''
-		,l.CostAmt  as ''money''
+		,(case when h.IssueType=1 then -1 else 1 end) * l.CostAmt  as ''money''
 
 		,lt.Memo as ''memo'' 
 	From MO_IssueDoc as h

@@ -31,7 +31,7 @@ Begin
 		,''UFIDA.U9.InvDoc.MiscRcv.MiscRcvTransL'' as ''src_key_type''
 
 		--docInfo
-		,h.DocNo as ''doc_no'',h.BusinessDate as ''doc_date''
+		,h.DocNo as ''doc_no'',convert(nvarchar(10),h.BusinessDate,120) as ''doc_date''
 
 		--fm
 		,Forg.Code as ''fm_org''
@@ -61,7 +61,7 @@ Begin
 		,lt.Memo as ''memo'' 
 	From InvDoc_TransferIn as h
 		Inner Join InvDoc_TransInLine as l on h.ID=l.TransferIn
-		left join InvDoc_TransInSubLine as sl on l.id=sl.TransInLine
+		Inner join InvDoc_TransInSubLine as sl on l.id=sl.TransInLine
 
 		Inner Join Base_Organization as org on h.Org=org.ID
 		left join InvDoc_TransInDocType as d on h.TransInDocType=d.ID
@@ -82,7 +82,7 @@ Begin
 		--memo
 		left join InvDoc_TransInSubLine_Trl as lt on l.ID=lt.ID and lt.SysMLFlag=@SysMLFlag';
 	--Ò»²½Ê½
-	Set @SQL=@SQL+'	Where h.TransferInType=0 ';
+	Set @SQL=@SQL+'	Where h.TransferInType=1 ';
 
 	If ISNULL(@FromDate,'')>'1900-01-01'
 	Begin

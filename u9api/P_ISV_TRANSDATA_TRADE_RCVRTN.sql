@@ -32,7 +32,9 @@ Begin
 		,''UFIDA.U9.PM.Rcv.RcvLine'' as ''src_key_type''
 
 		--docInfo
-		,h.DocNo as ''doc_no'',isnull(l.ConfirmDate,h.BusinessDate) as ''doc_date''
+		,h.DocNo as ''doc_no''
+		
+		,convert(nvarchar(10),isnull(l.ConfirmDate,h.BusinessDate),120) as ''doc_date''
 
 		--fm
 
@@ -49,9 +51,9 @@ Begin
 		,cu.Code as ''uom''
 
 		--qty
-		,l.RcvQtyCU as ''qty''
+		,-l.RcvQtyCU as ''qty''
 		,l.EvaluationPriceCU as ''price''
-		,l.EvaluationMnyFC  as ''money''
+		,-l.EvaluationMnyFC  as ''money''
 
 		,lt.Memo as ''memo'' ';
 

@@ -32,7 +32,7 @@ Begin
 		,''UFIDA.U9.PM.Rcv.RcvLine'' as ''src_key_type''
 
 		--docInfo
-		,h.DocNo as ''doc_no'',isnull(l.ConfirmDate,h.BusinessDate) as ''doc_date''
+		,h.DocNo as ''doc_no'',convert(nvarchar(10),isnull(l.ConfirmDate,h.BusinessDate),120) as ''doc_date''
 
 		--fm
 
@@ -67,7 +67,7 @@ Begin
 
 		--Tag
 		left join Base_Organization as Torg on l.OwnOrg=Torg.ID
-		left join CBO_Department as Tdept on l.RcvDept=Tdept.ID
+		left join CBO_Department as Tdept on l.RequireDept=Tdept.ID
 		left join CBO_Operators as TPerson on l.PurOper=TPerson.ID
 		left join CBO_Wh as Twh on l.Wh=Twh.ID
 

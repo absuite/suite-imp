@@ -32,7 +32,7 @@ Begin
 		,''UFIDA.U9.InvDoc.MiscRcv.MiscRcvTransL'' as ''src_key_type''
 
 		--docInfo
-		,h.DocNo as ''doc_no'',h.BusinessDate as ''doc_date''
+		,h.DocNo as ''doc_no'',convert(nvarchar(10),h.BusinessDate,120) as ''doc_date''
 
 		--fm
 		,Forg.Code as ''fm_org''
@@ -46,7 +46,7 @@ Begin
 		,Twh.Code as ''to_wh''
 		,TPerson.Code as ''to_person''
 
-		,''rcv'' as ''direction''
+		,''ship'' as ''direction''
 		,isnull(l.TransInSuppInfo_Code,l.TransInCustInfo_Code) as ''trader''		
 		,l.ItemInfo_ItemCode as ''item''
 		,l.ItemInfo_ItemName as ''item_name''
@@ -62,29 +62,28 @@ Begin
 		,lt.Memo as ''memo'' 
 	From InvDoc_TransferIn as h
 		Inner Join InvDoc_TransInLine as l on h.ID=l.TransferIn
-		left join InvDoc_TransInSubLine as sl on l.id=sl.TransInLine
+		Inner join InvDoc_TransInSubLine as sl on l.id=sl.TransInLine
 
 		Inner Join Base_Organization as org on h.Org=org.ID
 		left join InvDoc_TransInDocType as d on h.TransInDocType=d.ID
 		left join InvDoc_TransInDocType_Trl as dt on d.ID=dt.ID and dt.SysMLFlag=@SysMLFlag
 		--From
-		left Join Base_Organization as Forg on l.TransInOrg=Forg.ID
-		left join CBO_Department as Fdept on l.TransInDept=Fdept.ID
-		left join CBO_Wh as Fwh on l.TransInWh=Fwh.ID
-		left join CBO_Operators as FPerson on l.TransInWhMan=FPerson.ID
+		left Join Base_Organization as Forg on sl.TransOutOrg=Forg.ID
+		left join CBO_Department as Fdept on sl.TransOutDept=Fdept.ID
+		left join CBO_Wh as Fwh on sl.TransOutWh=Fwh.ID
+		left join CBO_Operators as FPerson on sl.TransOutWhMan=FPerson.ID
 		--Tag		
-		left join Base_Organization as Torg on sl.TransOutOrg=Torg.ID
-		left join CBO_Department as Tdept on sl.TransOutDept=Tdept.ID		
-		left join CBO_Wh as Twh on sl.TransOutWh=Twh.ID
-		left join CBO_Operators as TPerson on sl.TransOutWhMan=TPerson.ID
+		left join Base_Organization as Torg on l.TransInOrg=Torg.ID
+		left join CBO_Department as Tdept on l.TransInDept=Tdept.ID
+		left join CBO_Operators as TPerson on l.TransInWhMan=TPerson.ID
+		left join CBO_Wh as Twh on l.TransInWh=Twh.ID
 
 		left join Base_UOM as cu on l.CostUOM=cu.ID
 		left join CBO_Project as pro on l.Project=pro.ID
 		--memo
-		left join InvDoc_TransInLine_Trl as lt on l.ID=lt.ID and lt.SysMLFlag=@SysMLFlag';
-
-	Set @SQL=@SQL+'	Where h.id>0 ';
-
+		left join InvDoc_TransInSubLine_Trl as lt on l.ID=lt.ID and lt.SysMLFlag=@SysMLFlag';
+	--Ò»²½Ê½
+	Set @SQL=@SQL+'	Where h.TransferInType=0 ';
 
 	If ISNULL(@FromDate,'')>'1900-01-01'
 	Begin
@@ -96,7 +95,6 @@ Begin
 	End
 
 	Exec sp_executesql @SQL,N'@SysMLFlag Nvarchar(50),@FromDate DateTime,@ToDate DateTime',@SysMLFlag,@FromDate,@ToDate;
-
 
 End
 

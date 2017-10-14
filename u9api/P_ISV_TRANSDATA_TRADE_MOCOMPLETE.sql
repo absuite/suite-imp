@@ -32,7 +32,8 @@ Begin
 		,''UFIDA.U9.MO.Complete.CompleteRptRcvLine'' as ''src_key_type''
 
 		--docInfo
-		,h.DocNo as ''doc_no'',h.ActualRcvTime as ''doc_date''
+		,h.DocNo as ''doc_no''
+		,convert(nvarchar(10),isnull(h.ActualRcvTime,h.BusinessDate),120) as ''doc_date''
 
 		--fm
 		,Forg.Code as ''fm_org''
@@ -53,7 +54,7 @@ Begin
 		,cu.Code as ''uom''
 
 		--qty
-		,l.RcvQtyCostUom   as ''qty''
+		,case when h.Direction=0 then 1 else -1 end * l.RcvQtyCostUom   as ''qty''
 		,case when l.RcvQtyCostUom!=0 then 
 			(lc.EarnedCost_LaborCurrentCost+lc.EarnedCost_LaborPriorCost
 			+lc.EarnedCost_MachineCurrentCost+lc.EarnedCost_MachinePriorCost
@@ -61,7 +62,7 @@ Begin
 			+lc.EarnedCost_OverheadCurrentCost+lc.EarnedCost_OverheadPriorCost
 			+lc.EarnedCost_SubcontractCurrentCost+lc.EarnedCost_SubcontractPriorCost)/l.RcvQtyCostUom else 0 
 		end as ''price''
-		,(lc.EarnedCost_LaborCurrentCost+lc.EarnedCost_LaborPriorCost
+		,case when h.Direction=0 then 1 else -1 end * (lc.EarnedCost_LaborCurrentCost+lc.EarnedCost_LaborPriorCost
 			+lc.EarnedCost_MachineCurrentCost+lc.EarnedCost_MachinePriorCost
 			+lc.EarnedCost_MaterialCurrentCost+lc.EarnedCost_MaterialPriorCost
 			+lc.EarnedCost_OverheadCurrentCost+lc.EarnedCost_OverheadPriorCost
@@ -77,10 +78,11 @@ Begin
 		left join MO_CompleteRptDocType as d on h.CompleteDocType=d.ID
 		left join MO_CompleteRptDocType_Trl as dt on d.ID=dt.ID and dt.SysMLFlag=@SysMLFlag
 		left join CBO_ItemMaster as item on h.item=item.id
-		left join MO_ProductCost as lc on l.ID=lc.CompleteRptRcvLine
+		left join MO_ProductCost as lc on l.ID=lc.CompleteRptRcvLine and lc.IsBooking=1
+		left join MO_MO as mo on h.mo = mo.id
 		--From
 		left Join Base_Organization as Forg on h.RcvOrg=Forg.ID
-		left join CBO_Department as Fdept on h.HandleDept=Fdept.ID
+		left join CBO_Department as Fdept on mo.Department=Fdept.ID
 		left join CBO_Wh as Fwh on h.RcvWh=Fwh.ID
 		left join CBO_Operators as FPerson on h.HandlePerson=FPerson.ID
 		--Tag
