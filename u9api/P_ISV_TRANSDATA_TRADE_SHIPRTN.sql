@@ -41,10 +41,10 @@ Begin
 		,FPerson.Code as ''fm_person''
 
 		--to
-		,Torg.Code as ''to_org''
-		,Tdept.Code as ''to_dept''
-		,Twh.Code as ''to_wh''
-		,TPerson.Code as ''to_person''
+		,'''' as ''to_org''
+		,'''' as ''to_dept''
+		,'''' as  ''to_wh''
+		,'''' as ''to_person''
 
 		,''rcv'' as ''direction''
 		,item.Code as ''item''
